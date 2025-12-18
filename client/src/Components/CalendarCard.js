@@ -25,10 +25,6 @@ export const CalendarCard = ({ date, onDateChange }) => {
     };
 
     const shouldDisableDate = day => {
-        // Disable weekends
-        const isWeekend = day.getDay() === 0 || day.getDay() === 6;
-        if (isWeekend) return true;
-
         const formatted = day.toISOString().split("T")[0];
 
         // Disable if NOT in availableDates
