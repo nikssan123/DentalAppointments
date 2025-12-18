@@ -25,7 +25,11 @@ export const CalendarCard = ({ date, onDateChange }) => {
     };
 
     const shouldDisableDate = day => {
-        const formatted = day.toISOString().split("T")[0];
+        const year = day.getFullYear();
+        const month = String(day.getMonth() + 1).padStart(2, "0");
+        const date = String(day.getDate()).padStart(2, "0");
+
+        const formatted = `${year}-${month}-${date}`;
 
         // Disable if NOT in availableDates
         return !availableDates.includes(formatted);
