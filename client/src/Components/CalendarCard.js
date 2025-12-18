@@ -5,6 +5,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { enGB } from "date-fns/locale";
+import { DateTime } from "luxon";
 
 export const CalendarCard = ({ date, onDateChange }) => {
     const [ availableDates, setAvailableDates ] = useState([]);
@@ -31,7 +32,6 @@ export const CalendarCard = ({ date, onDateChange }) => {
 
         const formatted = `${year}-${month}-${date}`;
 
-        // Disable if NOT in availableDates
         return !availableDates.includes(formatted);
     };
 
@@ -71,7 +71,7 @@ export const CalendarCard = ({ date, onDateChange }) => {
                     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
                         <DateCalendar
                             value={date}
-                            minDate={new Date()}
+                            minDate={DateTime.now().setZone("Europe/Sofia").toJSDate()}
                             onChange={onDateChange}
                             onMonthChange={fetchAvailableDates}
                             shouldDisableDate={shouldDisableDate}

@@ -1,5 +1,7 @@
 const express = require("express");
 const Booking = require("../models/Booking");
+const { formatDate, isNextDayBookingBlocked } = require("../utils/date");
+const { DateTime } = require("luxon");
 // const { sendMail } = require("../utils/mail");
 
 const router = express.Router();
@@ -23,6 +25,12 @@ router.post("/", async (req, res) => {
             return res.status(400).json({ message: "Time slot already booked" });
         }
 
+        if (isNextDayBookingBlocked()) {
+            return res.status(400).json({
+                message: "Booking for the next day is closed after 17:00",
+            });
+        }
+
         // await sendMail(name, phone, date, time);
 
         const booking = await Booking.create({
@@ -44,10 +52,28 @@ router.get("/available-dates", async (req, res) => {
         const { year, month } = req.query;
         if (!year || !month) return res.status(400).json({ message: "Year and month required" });
 
+        const sofiaDateTime = DateTime.now().setZone("Europe/Sofia");
+        const today = sofiaDateTime.toJSDate();
+
         const y = parseInt(year, 10);
-        const m = parseInt(month, 10) - 1; // JS month is 0-indexed
+        const m = parseInt(month, 10) - 1;
 
         const ALL_SLOTS = [ "09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00" ];
+
+        const BULGARIAN_PUBLIC_HOLIDAYS = [
+            "01-01",
+            "03-03",
+            "05-01",
+            "05-06",
+            "05-24",
+            "09-06",
+            "09-22",
+            "12-24",
+            "12-25",
+            "12-26",
+        ];
+
+        const holidayDates = BULGARIAN_PUBLIC_HOLIDAYS.map(d => `${year}-${d}`);
 
         // Generate all days in the month
         const daysInMonth = new Date(y, m + 1, 0).getDate();
@@ -55,7 +81,7 @@ router.get("/available-dates", async (req, res) => {
             const d = i + 1;
             const day = new Date(y, m, d);
             return {
-                dateStr: day.toISOString().split("T")[0],
+                dateStr: formatDate(day),
                 dayOfWeek: day.getDay(), // Sunday=0, Saturday=6
             };
         });
@@ -68,14 +94,22 @@ router.get("/available-dates", async (req, res) => {
             },
         });
 
-        // Filter only dates that are weekdays and have at least one free slot
-        const availableDates = allDates
+        let availableDates = allDates
+            .filter(d => d.dateStr !== formatDate(today))
             .filter(d => d.dayOfWeek !== 0 && d.dayOfWeek !== 6) // exclude weekends
+            .filter(d => !holidayDates.includes(d.dateStr)) // exclude public holidays
             .filter(d => {
                 const bookedTimes = bookings.filter(b => b.date === d.dateStr).map(b => b.time);
                 return bookedTimes.length < ALL_SLOTS.length;
             })
             .map(d => d.dateStr);
+
+        if (isNextDayBookingBlocked()) {
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+
+            availableDates = availableDates.filter(d => d !== formatDate(tomorrow));
+        }
 
         res.json(availableDates);
     } catch (err) {

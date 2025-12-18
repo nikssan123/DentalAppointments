@@ -13,6 +13,10 @@ const BookingSchema = new mongoose.Schema(
             type: String, // "09:00"
             required: true,
         },
+        seen: {
+            type: Boolean,
+            default: false,
+        },
     },
     { timestamps: true }
 );

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "axios";
 import { Container, Box, Typography, Button, CircularProgress } from "@mui/material";
+import { formatDate } from "./utils/date";
 import { ConfirmMessage } from "./Components/ConfirmMessage";
 import { CalendarCard } from "./Components/CalendarCard";
 import { TimeSlotsCard } from "./Components/TimeSlotsCard";
@@ -56,13 +57,6 @@ export default function DentistBookingUI() {
         } catch (err) {
             console.error(err);
         }
-    };
-
-    const formatDate = date => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const day = String(date.getDate()).padStart(2, "0");
-        return `${year}-${month}-${day}`;
     };
 
     const handleConfirmAppointment = async () => {
@@ -147,6 +141,13 @@ export default function DentistBookingUI() {
                         Book Your Dental Appointment
                     </Typography>
                     <Typography
+                        variant="h6"
+                        fontWeight="bold"
+                        sx={{ fontSize: { xs: "1.5rem", sm: "2rem" } }}
+                    >
+                        With Dr. Zhelezova
+                    </Typography>
+                    <Typography
                         color="text.secondary"
                         mt={1}
                         sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
@@ -179,23 +180,59 @@ export default function DentistBookingUI() {
                 )}
 
                 {date && (
-                    <Button
-                        onClick={handleConfirmAppointment}
-                        variant="contained"
-                        size="large"
-                        fullWidth
-                        sx={{
-                            backgroundColor: "#C9A18A",
-                            color: "#FFFFFF",
-                            borderRadius: 3,
-                            py: { xs: 1.5, sm: 2 },
-                            fontWeight: 600,
-                            fontSize: { xs: "0.9rem", sm: "1rem" },
-                            "&:hover": { backgroundColor: "#B8927C" },
-                        }}
-                    >
-                        Confirm Appointment
-                    </Button>
+                    <React.Fragment>
+                        <Button
+                            onClick={handleConfirmAppointment}
+                            variant="contained"
+                            size="large"
+                            fullWidth
+                            sx={{
+                                backgroundColor: "#C9A18A",
+                                color: "#FFFFFF",
+                                borderRadius: 3,
+                                py: { xs: 1.5, sm: 2 },
+                                fontWeight: 600,
+                                fontSize: { xs: "0.9rem", sm: "1rem" },
+                                "&:hover": { backgroundColor: "#B8927C" },
+                            }}
+                        >
+                            Confirm Appointment
+                        </Button>
+
+                        <Box mt={4} textAlign="center">
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{ fontSize: "0.85rem" }}
+                            >
+                                © {new Date().getFullYear()} FornaxElit
+                            </Typography>
+
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    fontSize: "0.85rem",
+                                    mt: 0.5,
+                                }}
+                            >
+                                Contact:{" "}
+                                <Box
+                                    component="a"
+                                    href="fornaxelit@gmail.com"
+                                    sx={{
+                                        color: "#C9A18A",
+                                        textDecoration: "none",
+                                        fontWeight: 500,
+                                        "&:hover": {
+                                            textDecoration: "underline",
+                                        },
+                                    }}
+                                >
+                                    fornaxelit@gmail.com
+                                </Box>
+                            </Typography>
+                        </Box>
+                    </React.Fragment>
                 )}
 
                 <ConfirmMessage open={open} handleClose={handleClose} />
