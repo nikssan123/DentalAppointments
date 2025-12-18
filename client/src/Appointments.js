@@ -50,7 +50,7 @@ export default function DentistBookingUI() {
     const fetchTakenSlots = async () => {
         try {
             const res = await api.get("/api/bookings/availability", {
-                params: { date: date.toISOString().split("T")[0] },
+                params: { date: formatDate(date) },
             });
             setTakenSlots(res.data);
         } catch (err) {
@@ -58,6 +58,12 @@ export default function DentistBookingUI() {
         }
     };
 
+    const formatDate = date => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+    };
     const handleConfirmAppointment = async () => {
         let hasError = false;
         const newErrors = { name: "", phone: "" };
