@@ -9,9 +9,8 @@ exports.formatDate = date => {
 
 exports.isNextDayBookingBlocked = () => {
     const sofiaDateTime = DateTime.now().setZone("Europe/Sofia");
-    const now = sofiaDateTime.toJSDate(); // native Date object
-    const hour = now.getHours();
-    const today = now.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+    const hour = sofiaDateTime.hour; // Sofia hour
+    const today = sofiaDateTime.weekday % 7; // Luxon: Mon=1..Sun=7, convert to 0=Sun..6=Sat
 
     // Only block after 17:00
     if (hour < 17) return false;
