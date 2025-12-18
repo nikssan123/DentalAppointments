@@ -6,7 +6,7 @@ const transporter = nodemailer.createTransport({
     secure: true,
     auth: {
         type: "OAuth2",
-        user: "fornax.elit@gmail.com",
+        user: process.env.GMAIL_SENDER,
         clientId: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
@@ -19,8 +19,8 @@ exports.sendMail = async (name, phone, date, time) => {
     }
 
     const mailOptions = {
-        to: "nikssan123@gmail.com",
-        from: "fornax.elit@gmail.com",
+        to: process.env.GMAIL_RECEIVER,
+        from: process.env.GMAIL_SENDER,
         subject: "🦷 New Dental Appointment Booked",
         text: `
             New appointment booked:
