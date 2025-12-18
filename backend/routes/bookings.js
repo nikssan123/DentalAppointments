@@ -105,10 +105,9 @@ router.get("/available-dates", async (req, res) => {
             .map(d => d.dateStr);
 
         if (isNextDayBookingBlocked()) {
-            const tomorrow = new Date(today);
-            tomorrow.setDate(today.getDate() + 1);
+            const tomorrowStr = sofiaDateTime.plus({ days: 1 }).toFormat("yyyy-MM-dd");
 
-            availableDates = availableDates.filter(d => d !== formatDate(tomorrow));
+            availableDates = availableDates.filter(d => d !== formatDate(tomorrowStr));
         }
 
         res.json(availableDates);
