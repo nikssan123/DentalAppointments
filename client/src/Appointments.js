@@ -64,6 +64,7 @@ export default function DentistBookingUI() {
         const day = String(date.getDate()).padStart(2, "0");
         return `${year}-${month}-${day}`;
     };
+
     const handleConfirmAppointment = async () => {
         let hasError = false;
         const newErrors = { name: "", phone: "" };
@@ -98,7 +99,7 @@ export default function DentistBookingUI() {
             await api.post("/api/bookings", {
                 name,
                 phone,
-                date: date.toISOString().split("T")[0],
+                date: formatDate(date),
                 time: selectedTime,
             });
 

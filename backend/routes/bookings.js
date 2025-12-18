@@ -1,7 +1,6 @@
-// routes/bookings.js
 const express = require("express");
 const Booking = require("../models/Booking");
-const { sendMail } = require("../utils/mail");
+// const { sendMail } = require("../utils/mail");
 
 const router = express.Router();
 
@@ -19,9 +18,12 @@ router.post("/", async (req, res) => {
 
     try {
         const existing = await Booking.findOne({ date, time });
+
         if (existing) {
             return res.status(400).json({ message: "Time slot already booked" });
         }
+
+        // await sendMail(name, phone, date, time);
 
         const booking = await Booking.create({
             name,
@@ -29,10 +31,6 @@ router.post("/", async (req, res) => {
             date,
             time,
         });
-
-        console.log(name, phone, date, time);
-
-        await sendMail(name, phone, date, time);
 
         res.status(201).json(booking);
     } catch (e) {
