@@ -7,6 +7,8 @@ import { CalendarCard } from "./Components/CalendarCard";
 import { TimeSlotsCard } from "./Components/TimeSlotsCard";
 import { UserInfoCard } from "./Components/UserInfoCard";
 
+const phoneRegex = /^\+?[0-9]{7,15}$/;
+
 export default function DentistBookingUI() {
     const [ date, setDate ] = useState(null);
     const [ takenSlots, setTakenSlots ] = useState([]);
@@ -70,6 +72,9 @@ export default function DentistBookingUI() {
 
         if (!phone.trim()) {
             newErrors.phone = "Phone number is required";
+            hasError = true;
+        } else if (!phoneRegex.test(phone)) {
+            newErrors.phone = "Invalid phone number";
             hasError = true;
         }
 
