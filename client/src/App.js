@@ -1,7 +1,7 @@
 import "./App.css";
 import Appointments from "./Appointments";
 import AdminPage from "./Components/AdminPage";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 function App() {
     return (
@@ -10,6 +10,8 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Appointments />} />
                     <Route path="/admin" element={<AdminPage />} />
+
+                    <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </Router>
         </div>

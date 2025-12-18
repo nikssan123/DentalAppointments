@@ -24,10 +24,9 @@ app.get("/", (req, res) => {
 });
 
 app.use((req, res) => {
-    if (req.path.startsWith("/api")) {
-        return res.status(404).json({ message: "Not found" });
+    if (!req.path.startsWith("/api")) {
+        res.sendFile(path.join(dirname, "..", "client", "build", "index.html"));
     }
-    res.redirect("/");
 });
 
 mongoose
