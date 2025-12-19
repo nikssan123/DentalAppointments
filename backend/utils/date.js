@@ -8,13 +8,15 @@ exports.formatDate = date => {
 };
 
 exports.isNextDayBookingBlocked = () => {
-    const sofiaDateTime = DateTime.now().setZone("Europe/Sofia");
-    const hour = sofiaDateTime.hour; // Sofia hour
-    const today = sofiaDateTime.weekday % 7; // Luxon: Mon=1..Sun=7, convert to 0=Sun..6=Sat
+    const now = DateTime.now().setZone("Europe/Sofia");
 
-    // Only block after 17:00
-    if (hour < 17) return false;
+    // Before 17:00 → always allow
+    if (now.hour < 17) return false;
 
-    // Block next-day booking if today is Mon–Thu (1–4) or Sunday (0)
-    return (today >= 1 && today <= 4) || today === 0;
+    // Luxon: Mon=1 ... Sun=7
+    // Block if today is Mon–Thu or Sunday
+    return (
+        (now.weekday >= 1 && now.weekday <= 4) || // Mon–Thu
+        now.weekday === 7 // Sunday
+    );
 };
