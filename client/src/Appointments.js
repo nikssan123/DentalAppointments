@@ -219,7 +219,34 @@ export default function DentistBookingUI() {
                             Confirm Appointment
                         </Button>
 
-                        <Box mt={4} textAlign="center">
+                        <Box mt={6} textAlign="center">
+                            {/* SEO TEXT */}
+                            <Typography
+                                component="h1"
+                                sx={{
+                                    fontSize: "1rem",
+                                    fontWeight: 600,
+                                    color: "#3E3A39",
+                                    mb: 0.5,
+                                }}
+                            >
+                                Д-р Мирела Железова – Зъболекар Варна
+                            </Typography>
+
+                            <Typography
+                                component="p"
+                                sx={{
+                                    fontSize: "0.85rem",
+                                    color: "text.secondary",
+                                    maxWidth: 420,
+                                    mx: "auto",
+                                    mb: 2,
+                                }}
+                            >
+                                Стоматолог във Варна с възможност за онлайн записване на час.
+                            </Typography>
+
+                            {/* FOOTER */}
                             <Typography
                                 variant="body2"
                                 color="text.secondary"
@@ -238,7 +265,7 @@ export default function DentistBookingUI() {
                                 Contact:{" "}
                                 <Box
                                     component="a"
-                                    href="fornaxelit@gmail.com"
+                                    href="mailto:fornaxelit@gmail.com"
                                     sx={{
                                         color: "#C9A18A",
                                         textDecoration: "none",
