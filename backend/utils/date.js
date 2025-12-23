@@ -10,11 +10,8 @@ exports.formatDate = date => {
 exports.isNextDayBookingBlocked = () => {
     const now = DateTime.now().setZone("Europe/Sofia");
 
-    // Before 17:00 → always allow
     if (now.hour < 17) return false;
 
-    // Luxon: Mon=1 ... Sun=7
-    // Block if today is Mon–Thu or Sunday
     return (
         (now.weekday >= 1 && now.weekday <= 4) || // Mon–Thu
         now.weekday === 7 // Sunday

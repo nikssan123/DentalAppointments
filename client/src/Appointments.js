@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import api from "axios";
 import { Container, Box, Typography, Button, CircularProgress } from "@mui/material";
 import { formatDate } from "./utils/date";
@@ -23,11 +23,24 @@ export default function DentistBookingUI() {
         time: "",
     });
 
+    const timeSlotsRef = useRef(null);
+
     useEffect(
         () => {
             if (!date) return;
 
             fetchTakenSlots();
+
+            const timer = setTimeout(() => {
+                if (timeSlotsRef.current) {
+                    timeSlotsRef.current.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                    });
+                }
+            }, 100);
+
+            return () => clearTimeout(timer);
         },
         [ date ]
     );
@@ -164,13 +177,15 @@ export default function DentistBookingUI() {
                 <CalendarCard date={date} onDateChange={onDateChange} />
 
                 {date && (
-                    <TimeSlotsCard
-                        timeSlots={timeSlots}
-                        selectedTime={selectedTime}
-                        setSelectedTime={handleSelectedTime}
-                        takenSlots={takenSlots}
-                        errors={errors}
-                    />
+                    <Box ref={timeSlotsRef} sx={{ scrollMarginTop: "20px" }}>
+                        <TimeSlotsCard
+                            timeSlots={timeSlots}
+                            selectedTime={selectedTime}
+                            setSelectedTime={handleSelectedTime}
+                            takenSlots={takenSlots}
+                            errors={errors}
+                        />
+                    </Box>
                 )}
 
                 {date && (

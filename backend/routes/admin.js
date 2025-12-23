@@ -25,7 +25,7 @@ router.post("/bookings", async (req, res) => {
     }
 
     try {
-        const bookings = await Booking.find().sort({ date: 1, time: 1 });
+        const bookings = await Booking.find().sort({ createdAt: -1 });
         res.json(bookings);
     } catch (err) {
         console.error(err);

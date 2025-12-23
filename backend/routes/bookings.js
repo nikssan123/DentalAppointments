@@ -53,7 +53,7 @@ router.get("/available-dates", async (req, res) => {
         if (!year || !month) return res.status(400).json({ message: "Year and month required" });
 
         const sofiaDateTime = DateTime.now().setZone("Europe/Sofia");
-        const today = sofiaDateTime.toJSDate();
+        const today = sofiaDateTime.toFormat("yyyy-MM-dd");
 
         const y = parseInt(year, 10);
         const m = parseInt(month, 10) - 1;
@@ -95,7 +95,7 @@ router.get("/available-dates", async (req, res) => {
         });
 
         let availableDates = allDates
-            .filter(d => d.dateStr !== formatDate(today))
+            .filter(d => d.dateStr !== today)
             .filter(d => d.dayOfWeek !== 0 && d.dayOfWeek !== 6) // exclude weekends
             .filter(d => !holidayDates.includes(d.dateStr)) // exclude public holidays
             .filter(d => {
@@ -107,9 +107,12 @@ router.get("/available-dates", async (req, res) => {
         console.log("before isNextDat");
         if (isNextDayBookingBlocked()) {
             console.log("inside");
+
             const tomorrowStr = sofiaDateTime.plus({ days: 1 }).toFormat("yyyy-MM-dd");
 
-            availableDates = availableDates.filter(d => d !== formatDate(tomorrowStr));
+            if (availableDates.includes(tomorrowStr)) {
+                availableDates = availableDates.filter(d => d !== tomorrowStr);
+            }
         }
 
         res.json(availableDates);
