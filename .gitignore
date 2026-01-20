@@ -162,3 +162,6 @@ yarn-debug.log*
 yarn-error.log*
 
 backend/client/build
+
+client/public/icon
+mynodeapp.tar

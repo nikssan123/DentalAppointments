@@ -158,19 +158,53 @@ export default function DentistBookingUI() {
                     >
                         Book Your Dental Appointment
                     </Typography>
+
                     <Typography
                         variant="h6"
                         fontWeight="bold"
-                        sx={{ fontSize: { xs: "1.5rem", sm: "2rem" } }}
+                        sx={{ fontSize: { xs: "1.4rem", sm: "1.8rem" } }}
                     >
                         With Dr. Zhelezova
                     </Typography>
+
                     <Typography
                         color="text.secondary"
                         mt={1}
                         sx={{ fontSize: { xs: "0.9rem", sm: "1rem" } }}
                     >
                         Select a date and choose an available time
+                    </Typography>
+
+                    <Typography
+                        mt={2}
+                        sx={{
+                            fontSize: "0.9rem",
+                            color: "text.secondary",
+                            lineHeight: 1.6,
+                        }}
+                    >
+                        📍 <strong>Dentist Dr. Zhelezova</strong>
+                        <br />
+                        ul. Debar 4, Varna, Bulgaria
+                    </Typography>
+
+                    <Typography
+                        component="a"
+                        href="https://www.google.com/maps/place/Varna+CenterOdesos,+ul.+%22Debar%22+4,+9000+Varna/@43.2015297,27.9127869,18z/data=!3m1!4b1!4m6!3m5!1s0x40a453f1545d00b7:0x15fdc03f5e68747d!8m2!3d43.2015278!4d27.9140744!16s%2Fg%2F11c5pwssl1?entry=ttu&g_ep=EgoyMDI1MTIwOS4wIKXMDSoKLDEwMDc5MjA3M0gBUAM%3D"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{
+                            display: "inline-block",
+                            mt: 0.5,
+                            fontSize: "0.85rem",
+                            color: "#C9A18A",
+                            textDecoration: "none",
+                            "&:hover": {
+                                textDecoration: "underline",
+                            },
+                        }}
+                    >
+                        View on Google Maps
                     </Typography>
                 </Box>
 

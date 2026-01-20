@@ -2,7 +2,7 @@ const express = require("express");
 const Booking = require("../models/Booking");
 const { formatDate, isNextDayBookingBlocked } = require("../utils/date");
 const { DateTime } = require("luxon");
-// const { sendMail } = require("../utils/mail");
+const { sendMail } = require("../utils/mail");
 
 const router = express.Router();
 
@@ -25,13 +25,16 @@ router.post("/", async (req, res) => {
             return res.status(400).json({ message: "Time slot already booked" });
         }
 
-        if (isNextDayBookingBlocked()) {
+        const sofiaNow = DateTime.now().setZone("Europe/Sofia");
+        const tomorrowStr = sofiaNow.plus({ days: 1 }).toFormat("yyyy-MM-dd");
+
+        if (isNextDayBookingBlocked() && date === tomorrowStr) {
             return res.status(400).json({
                 message: "Booking for the next day is closed after 17:00",
             });
         }
 
-        // await sendMail(name, phone, date, time);
+        await sendMail(name, phone, date, time);
 
         const booking = await Booking.create({
             name,
