@@ -8,6 +8,9 @@ WORKDIR /
 # --------------------
 COPY client/. ./client/
 WORKDIR /client
+
+ENV REACT_APP_API_URL=https://smileupgrade.net/
+
 RUN npm install && npm run build
 
 # Set working directory to root
@@ -19,14 +22,6 @@ WORKDIR /
 COPY backend/. ./backend/
 WORKDIR /backend
 RUN npm install
-
-
-
-# --------------------
-# Copy frontend build to backend (optional)
-# --------------------
-# Uncomment and adjust if your backend serves frontend from /backend/public
-# RUN cp -r dist/* /backend/public/
 
 # --------------------
 # Final backend
