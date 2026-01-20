@@ -1,5 +1,6 @@
 import "./App.css";
 import Appointments from "./Appointments";
+import { AdminCalendar } from "./Components/AdminCalendar";
 import AdminPage from "./Components/AdminPage";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 

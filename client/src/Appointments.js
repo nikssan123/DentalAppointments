@@ -2,10 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 import api from "axios";
 import { Container, Box, Typography, Button, CircularProgress } from "@mui/material";
 import { formatDate } from "./utils/date";
+import { fetchTakenSlots } from "./utils/fetch";
 import { ConfirmMessage } from "./Components/ConfirmMessage";
 import { CalendarCard } from "./Components/CalendarCard";
 import { TimeSlotsCard } from "./Components/TimeSlotsCard";
 import { UserInfoCard } from "./Components/UserInfoCard";
+import { Footer } from "./Components/Footer";
 
 const phoneRegex = /^\+?[0-9]{7,15}$/;
 
@@ -29,7 +31,11 @@ export default function DentistBookingUI() {
         () => {
             if (!date) return;
 
-            fetchTakenSlots();
+            (async () => {
+                const slots = await fetchTakenSlots("day", date);
+
+                setTakenSlots(slots);
+            })();
 
             const timer = setTimeout(() => {
                 if (timeSlotsRef.current) {
@@ -42,7 +48,7 @@ export default function DentistBookingUI() {
 
             return () => clearTimeout(timer);
         },
-        [ date ]
+        [ date ],
     );
 
     const timeSlots = [ "09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00" ];
@@ -60,17 +66,6 @@ export default function DentistBookingUI() {
         setSelectedTime(time);
         if (errors.time) {
             setErrors(prev => ({ ...prev, time: "" }));
-        }
-    };
-
-    const fetchTakenSlots = async () => {
-        try {
-            const res = await api.get("/api/bookings/availability", {
-                params: { date: formatDate(date) },
-            });
-            setTakenSlots(res.data);
-        } catch (err) {
-            console.error(err);
         }
     };
 
@@ -120,7 +115,7 @@ export default function DentistBookingUI() {
             setSelectedTime(null);
             setName("");
             setPhone("");
-            await fetchTakenSlots();
+            await fetchTakenSlots("day", date);
         } catch (err) {
             console.error(err);
         } finally {
@@ -253,66 +248,7 @@ export default function DentistBookingUI() {
                             Confirm Appointment
                         </Button>
 
-                        <Box mt={6} textAlign="center">
-                            {/* SEO TEXT */}
-                            <Typography
-                                component="h1"
-                                sx={{
-                                    fontSize: "1rem",
-                                    fontWeight: 600,
-                                    color: "#3E3A39",
-                                    mb: 0.5,
-                                }}
-                            >
-                                Д-р Мирела Железова – Зъболекар Варна
-                            </Typography>
-
-                            <Typography
-                                component="p"
-                                sx={{
-                                    fontSize: "0.85rem",
-                                    color: "text.secondary",
-                                    maxWidth: 420,
-                                    mx: "auto",
-                                    mb: 2,
-                                }}
-                            >
-                                Стоматолог във Варна с възможност за онлайн записване на час.
-                            </Typography>
-
-                            {/* FOOTER */}
-                            <Typography
-                                variant="body2"
-                                color="text.secondary"
-                                sx={{ fontSize: "0.85rem" }}
-                            >
-                                © {new Date().getFullYear()} FornaxElit
-                            </Typography>
-
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    fontSize: "0.85rem",
-                                    mt: 0.5,
-                                }}
-                            >
-                                Contact:{" "}
-                                <Box
-                                    component="a"
-                                    href="mailto:fornaxelit@gmail.com"
-                                    sx={{
-                                        color: "#C9A18A",
-                                        textDecoration: "none",
-                                        fontWeight: 500,
-                                        "&:hover": {
-                                            textDecoration: "underline",
-                                        },
-                                    }}
-                                >
-                                    fornaxelit@gmail.com
-                                </Box>
-                            </Typography>
-                        </Box>
+                        <Footer />
                     </React.Fragment>
                 )}
 

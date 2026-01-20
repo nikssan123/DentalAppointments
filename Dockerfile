@@ -3,6 +3,15 @@ FROM node:20-alpine
 
 # Set working directory to root
 WORKDIR /
+# --------------------
+# Frontend build
+# --------------------
+COPY client/. ./client/
+WORKDIR /client
+RUN npm install && npm run build
+
+# Set working directory to root
+WORKDIR /
 
 # --------------------
 # Backend dependencies
@@ -12,13 +21,6 @@ WORKDIR /backend
 RUN npm install
 
 
-WORKDIR /
-# --------------------
-# Frontend build
-# --------------------
-COPY client/. ./client/
-WORKDIR /client
-RUN npm install && npm run build
 
 # --------------------
 # Copy frontend build to backend (optional)

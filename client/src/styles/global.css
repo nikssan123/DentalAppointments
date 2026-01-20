@@ -1,0 +1,56 @@
+/* Base calendar */
+.rbc-calendar {
+    font-family: Roboto, sans-serif;
+}
+
+/* Toolbar */
+.rbc-toolbar {
+    margin-bottom: 16px;
+}
+
+.rbc-toolbar-label {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* Buttons */
+.rbc-toolbar button {
+    border-radius: 6px;
+    padding: 6px 12px;
+    border: 1px solid #e0e0e0;
+    background: white;
+    cursor: pointer;
+}
+
+.rbc-toolbar button:hover {
+    background: #f5f5f5;
+}
+
+.rbc-toolbar button.rbc-active {
+    background: #1976d2;
+    color: white;
+    border-color: #1976d2;
+}
+
+/* Time grid */
+.rbc-time-content {
+    border-top: 1px solid #e0e0e0;
+}
+
+/* Today highlight */
+.rbc-today {
+    background-color: #e3f2fd;
+}
+
+/* Events */
+.rbc-event {
+    background-color: #1976d2;
+    border-radius: 6px;
+    padding: 4px 6px;
+    font-size: 0.85rem;
+}
+
+/* Remove ugly focus outline */
+.rbc-event:focus {
+    outline: none;
+}

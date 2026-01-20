@@ -15,6 +15,52 @@ router.get("/availability", async (req, res) => {
     res.json(bookedTimes);
 });
 
+router.get("/availability/month", async (req, res) => {
+    try {
+        const { month } = req.query; // "2026-01"
+
+        if (!month) {
+            return res.status(400).json({ error: "Month is required (YYYY-MM)" });
+        }
+
+        // Match all bookings in the month
+        const bookings = await Booking.find({
+            date: { $regex: `^${month}` },
+        }).lean();
+
+        const events = bookings.map(b => {
+            const start = new Date(`${b.date}T${b.time}`);
+            const end = new Date(start.getTime() + 60 * 60 * 1000);
+
+            return {
+                id: b._id,
+                title: b.name || "Booked",
+                start,
+                end,
+                seen: b.seen,
+                phone: b.phone,
+            };
+        });
+
+        res.json(events);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to load month availability" });
+    }
+});
+
+router.delete("/:id", async (req, res) => {
+    try {
+        const booking = await Booking.findByIdAndDelete(req.params.id);
+        if (!booking) return res.status(404).json({ error: "Appointment not found" });
+
+        res.json({ success: true, id: booking._id });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to delete appointment" });
+    }
+});
+
 router.post("/", async (req, res) => {
     const { name, phone, date, time } = req.body;
 
@@ -107,10 +153,7 @@ router.get("/available-dates", async (req, res) => {
             })
             .map(d => d.dateStr);
 
-        console.log("before isNextDat");
         if (isNextDayBookingBlocked()) {
-            console.log("inside");
-
             const tomorrowStr = sofiaDateTime.plus({ days: 1 }).toFormat("yyyy-MM-dd");
 
             if (availableDates.includes(tomorrowStr)) {
@@ -119,6 +162,43 @@ router.get("/available-dates", async (req, res) => {
         }
 
         res.json(availableDates);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
+router.post("/bookings/block-day", async (req, res) => {
+    try {
+        const { date, reason } = req.body; // e.g. { date: "2026-01-25", reason: "Vacation" }
+        if (!date) return res.status(400).json({ message: "Date is required" });
+
+        const ALL_SLOTS = [ "09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00" ];
+
+        // Check if there are already bookings on that date
+        const existing = await Booking.find({ date });
+        const existingTimes = existing.map(b => b.time);
+
+        // Create bookings for all remaining slots
+        const newBookings = ALL_SLOTS.filter(time => !existingTimes.includes(time)).map(time => ({
+            name: reason || "Doctor unavailable",
+            phone: "-",
+            date,
+            time,
+            seen: true,
+        }));
+
+        if (newBookings.length === 0) {
+            return res.status(400).json({ message: "All slots already taken" });
+        }
+
+        const inserted = await Booking.insertMany(newBookings);
+
+        res.json({
+            message: "Day marked as unavailable",
+            date,
+            blockedSlots: inserted.map(b => b.time),
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Server error" });
